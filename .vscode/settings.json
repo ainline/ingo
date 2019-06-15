@@ -1,0 +1,9 @@
+{
+    "python.pythonPath": "D:\\future\\Anaconda3\\envs\\ingo\\python.exe",
+    "editor.cursorSmoothCaretAnimation": true,
+    "editor.cursorWidth": 2,
+    "editor.fontLigatures": true,
+    "editor.formatOnPaste": true,
+    "editor.formatOnType": true,
+    "python.jediEnabled": true
+}
