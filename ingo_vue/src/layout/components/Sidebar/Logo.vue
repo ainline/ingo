@@ -14,6 +14,7 @@
 </template>
 
 <script>
+import logoPng from '@/assets/logo.png'
 export default {
   name: 'SidebarLogo',
   props: {
@@ -24,8 +25,8 @@ export default {
   },
   data() {
     return {
-      title: 'Vue Admin Template',
-      logo: 'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png'
+      title: '统一授权服务平台',
+      logo: logoPng
     }
   }
 }
@@ -55,6 +56,9 @@ export default {
     width: 100%;
 
     & .sidebar-logo {
+      position: absolute;
+      left: 8px;
+      top:8px;
       width: 32px;
       height: 32px;
       vertical-align: middle;
