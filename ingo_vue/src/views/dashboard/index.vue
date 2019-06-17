@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard-container">
-    <div class="dashboard-text">name: {{ name }}</div>
+    <div class="dashboard-text">name: {{ username }}</div>
   </div>
 </template>
 
@@ -12,7 +12,11 @@ export default {
   computed: {
     ...mapGetters([
       'name'
-    ])
+    ]),
+    username() {
+      console.log(this.$router)
+      return this.$route.name
+    }
   }
 }
 </script>
