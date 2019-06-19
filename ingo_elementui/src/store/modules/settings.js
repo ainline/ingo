@@ -11,7 +11,7 @@ const state = {
   sidebarLogo: sidebarLogo
 }
 
-const mutations = {
+const mutations ={
   CHANGE_SETTING: (state, { key, value }) => {
     if (state.hasOwnProperty(key)) {
       state[key] = value

@@ -5,8 +5,8 @@
     <div :class="{hasTagsView:needTagsView}" class="main-container">
       <div :class="{'fixed-header':fixedHeader}">
         <navbar />
+        <tags-view />
       </div>
-      <tags-view />
       <app-main />
       <right-panel v-if="showSettings">
         <settings />
@@ -35,7 +35,7 @@ export default {
       sidebar: state => state.app.sidebar,
       device: state => state.app.device,
       showSettings: true,
-      needTagsView: state => state.settings.tagsView,
+      needTagsView: true,
       fixedHeader: state => state.settings.fixedHeader
     }),
     classObj() {
