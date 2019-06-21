@@ -205,13 +205,14 @@ export default {
       cursor: pointer;
       height: 26px;
       line-height: 26px;
-      border: 1px solid #d8dce5;
+      border: 1px solid #d8dce569;
       color: #495060;
       background: #fff;
       padding: 0 8px;
       font-size: 12px;
       margin-left: 5px;
       margin-top: 4px;
+      min-width: 120px;
       &:first-of-type {
         margin-left: 15px;
       }
@@ -219,9 +220,9 @@ export default {
         margin-right: 15px;
       }
       &.active {
-        background-color: #42b983;
+        background-color: #1c467a ;
         color: #fff;
-        border-color: #42b983;
+        border-color: #1c467a ;
         &::before {
           content: '';
           background: #fff;
@@ -264,21 +265,24 @@ export default {
 .tags-view-wrapper {
   .tags-view-item {
     .el-icon-close {
-      width: 16px;
-      height: 16px;
+      position: absolute;
+      top: 6px;
+      right: 2px;
+      font-size: 14px;
+      line-height: 9px;
+      width: 14px;
+      height: 14px;
       vertical-align: 2px;
-      border-radius: 50%;
+      border-radius: 1%;
       text-align: center;
       transition: all .3s cubic-bezier(.645, .045, .355, 1);
-      transform-origin: 100% 50%;
       &:before {
         transform: scale(.6);
-        display: inline-block;
+        //display: inline-block;
         vertical-align: -3px;
       }
-      &:hover {
-        background-color: #b4bccc;
-        color: #fff;
+      &:hover{
+        color: rgba(228, 102, 29, 0.555);
       }
     }
   }

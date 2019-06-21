@@ -38,11 +38,11 @@ import nestedRouter from './modules/nested'
  * a base page that does not have permission requirements
  * all roles can be accessed
  */
-export const constantRoutes = [
+export const constantRoutes =[
   {
     path: '/redirect',
     component: Layout,
-    hidden: true,
+    hidden: false,
     children: [
       {
         path: '/redirect/:path*',
