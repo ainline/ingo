@@ -2,6 +2,7 @@
  * Created by PanJiaChen on 16/11/18.
  */
 
+import CryptoJS from 'crypto-js'
 /**
  * Parse the time to string
  * @param {(Object|string|number)} time
@@ -107,4 +108,26 @@ export function param2Obj(url) {
         .replace(/\+/g, ' ') +
       '"}'
   )
+}
+
+/**
+ *
+ * @param {string} 自定义工具类
+ */
+export default {
+  // 密码加密
+  encrypt(word, keyStr) {
+    keyStr = keyStr || 'ingo20190000xxxv'
+    var key = CryptoJS.enc.Utf8.parse(keyStr)
+    var srcs = CryptoJS.enc.Utf8.parse(word)
+    var encrypted = CryptoJS.AES.encrypt(srcs, key, { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7 })
+    return encrypted.toString()
+  },
+  // 解密
+  decrypt(word, keyStr) {
+    keyStr = keyStr || 'ingo20190000xxxv'
+    var key = CryptoJS.enc.Utf8.parse(keyStr)
+    var decrypt = CryptoJS.AES.decrypt(word, key, { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7 })
+    return CryptoJS.enc.Utf8.stringify(decrypt).toString()
+  }
 }

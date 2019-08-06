@@ -5,5 +5,12 @@
     "editor.fontLigatures": true,
     "editor.formatOnPaste": true,
     "editor.formatOnType": true,
-    "python.jediEnabled": true
+    "python.jediEnabled": true,
+    "python.formatting.provider": "black",
+    "python.testing.pytestArgs": [
+        "."
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.nosetestsEnabled": false,
+    "python.testing.pytestEnabled": true
 }

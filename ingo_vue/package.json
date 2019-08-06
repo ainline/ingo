@@ -15,7 +15,7 @@
     "svgo": "svgo -f src/icons/svg --config=src/icons/svgo.yml"
   },
   "dependencies": {
-    "axios": "0.18.1",
+    "axios": "^0.18.1",
     "element-ui": "2.7.2",
     "js-cookie": "2.2.0",
     "normalize.css": "7.0.0",
@@ -39,6 +39,7 @@
     "babel-jest": "23.6.0",
     "chalk": "2.4.2",
     "connect": "3.6.6",
+    "crypto-js": "^3.1.9-1",
     "eslint": "5.15.3",
     "eslint-plugin-vue": "5.2.2",
     "html-webpack-plugin": "3.2.0",

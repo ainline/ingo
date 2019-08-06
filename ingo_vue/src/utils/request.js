@@ -1,85 +1,113 @@
+/**
+  * axios封装
+  * 请求拦截、响应拦截、错误统一处理
+  */
 import axios from 'axios'
-import { MessageBox, Message } from 'element-ui'
-import store from '@/store'
-import { getToken } from '@/utils/auth'
+import { Message } from 'element-ui'
+// import router from '../router'
+import store from '../store/index'
 
-// create an axios instance
-const service = axios.create({
-  baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
-  // withCredentials: true, // send cookies when cross-domain requests
-  timeout: 5000 // request timeout
-})
+/**
+  * 提示函数
+  * 禁止点击蒙层、显示一秒后关闭
+  */
+const tip = msg => {
+  Message({
+    message: msg || 'Error',
+    type: 'error',
+    duration: 5 * 1000
+  })
+}
 
-// request interceptor
-service.interceptors.request.use(
+/**
+  * 跳转登录页
+  * 携带当前页面路由，以期在登录页面完成登录后返回当前页面
+  */
+// const toLogin = () => {
+//   router.replace({
+//     path: '/login',
+//     query: {
+//       redirect: router.currentRoute.fullPath
+//     }
+//   })
+// }
+
+/**
+  * 请求失败后的错误统一处理
+  * @param {Number} status 请求失败的状态码
+  */
+const errorHandle = (status, other) => {
+  // 状态码判断
+  switch (status) {
+    // 401: 未登录状态，跳转登录页
+    case 401:
+      // toLogin()
+      break
+    // 403 token过期
+    // 清除token并跳转登录页
+    case 403:
+      tip('登录过期，请重新登录')
+      localStorage.removeItem('token')
+      store.commit('loginSuccess', null)
+      setTimeout(() => {
+        // toLogin()
+      }, 1000)
+      break
+    // 404请求不存在
+    case 404:
+      tip('请求的资源不存在')
+      break
+      // 500
+    case 500:
+      tip('请求服务器失败')
+      break
+    default:
+      console.log(other)
+  }
+}
+
+// 创建axios实例
+var instance = axios.create({ timeout: 5000 })
+// 设置post请求头
+instance.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
+/**
+  * 请求拦截器
+  * 每次请求前，如果存在token则在请求头中携带token
+  */
+instance.interceptors.request.use(
   config => {
-    // do something before request is sent
-
-    if (store.getters.token) {
-      // let each request carry token
-      // ['X-Token'] is a custom headers key
-      // please modify it according to the actual situation
-      config.headers['X-Token'] = getToken()
-    }
+    // 登录流程控制中，根据本地是否存在token判断用户的登录情况
+    // 但是即使token存在，也有可能token是过期的，所以在每次的请求头中携带token
+    // 后台根据携带的token判断用户的登录情况，并返回给我们对应的状态码
+    // 而后我们可以在响应拦截器中，根据状态码进行一些统一的操作。
+    const token = store.state.token
+    token && (config.headers.Authorization = token)
+    console.log(token)
+    // const regex = /.*csrftoken=([^;.]*).*$/ // 用于从cookie中匹配 csrftoken值
+    // console.log(document.cookie)
+    // config.headers['X-CSRFToken'] = document.cookie.match(regex) === null ? null : document.cookie.match(regex)[1]
     return config
   },
+  error => Promise.error(error))
+
+// 响应拦截器
+instance.interceptors.response.use(
+  // 请求成功
+  res => res.status === 200 ? Promise.resolve(res) : Promise.reject(res),
+  // 请求失败
   error => {
-    // do something with request error
-    console.log(error) // for debug
-    return Promise.reject(error)
-  }
-)
-
-// response interceptor
-service.interceptors.response.use(
-  /**
-   * If you want to get http information such as headers or status
-   * Please return  response => response
-  */
-
-  /**
-   * Determine the request status by custom code
-   * Here is just an example
-   * You can also judge the status by HTTP Status Code
-   */
-  response => {
-    const res = response.data
-
-    // if the custom code is not 20000, it is judged as an error.
-    if (res.code !== 20000) {
-      Message({
-        message: res.message || 'Error',
-        type: 'error',
-        duration: 5 * 1000
-      })
-
-      // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-      if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
-        // to re-login
-        MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
-          confirmButtonText: 'Re-Login',
-          cancelButtonText: 'Cancel',
-          type: 'warning'
-        }).then(() => {
-          store.dispatch('user/resetToken').then(() => {
-            location.reload()
-          })
-        })
-      }
-      return Promise.reject(new Error(res.message || 'Error'))
+    const { response } = error
+    if (response) {
+      // 请求已发出，但是不在2xx的范围
+      errorHandle(response.status, response.data.message)
+      return Promise.reject(response)
     } else {
-      return res
+      // 处理断网的情况
+      // eg:请求超时或断网时，更新state的network状态
+      // network状态在app.vue中控制着一个全局的断网提示组件的显示隐藏
+      // 关于断网组件中的刷新重新获取数据，会在断网组件中说明
+      store.commit('changeNetwork', false)
     }
-  },
-  error => {
-    console.log('err' + error) // for debug
-    Message({
-      message: error.message,
-      type: 'error',
-      duration: 5 * 1000
-    })
-    return Promise.reject(error)
-  }
-)
+  })
 
-export default service
+export default instance
